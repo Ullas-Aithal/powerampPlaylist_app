@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Poweramp Playlist</string>
+    <string name="title">Untitled</string>
+    <string name="sGetPlaylists">Get Playlists</string>
+    <string name="sSelectedItems">Selected Items</string>
+</resources>
