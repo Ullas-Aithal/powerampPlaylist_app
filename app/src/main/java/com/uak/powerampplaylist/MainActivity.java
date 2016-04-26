@@ -75,25 +75,21 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
-
     }
 
 
-
-    public class TrackAdapter extends ArrayAdapter<Tracks>{
-        public TrackAdapter(Context context, ArrayList<Tracks> tracks){
-            super(context,0,tracks);
+    public class TrackAdapter extends ArrayAdapter<Tracks> {
+        public TrackAdapter(Context context, ArrayList<Tracks> tracks) {
+            super(context, 0, tracks);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
+        public View getView(int position, View convertView, ViewGroup parent) {
             Tracks tracks = getItem(position);
 
-            if(convertView == null)
-            {
+            if (convertView == null) {
                 LayoutInflater li = getLayoutInflater();
-                convertView = li.inflate(R.layout.track_list_view,parent, false);
+                convertView = li.inflate(R.layout.track_list_view, parent, false);
             }
             TextView tv = (TextView) convertView.findViewById(R.id.track_text_view);
             CheckBox cb = (CheckBox) convertView.findViewById(R.id.track_list_cb);
@@ -106,10 +102,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     public void getPlaylistsIntent(View view) {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         Toast t = Toast.makeText(MainActivity.this, "Getting Playlists", Toast.LENGTH_SHORT);
         t.show();
 
@@ -123,17 +117,16 @@ public class MainActivity extends AppCompatActivity {
 
         //Creating ArrayAdapter for List View
         //ArrayAdapter<String> trackAdapter = new ArrayAdapter<String>(this, R.layout.track_list_view, R.id.track_text_view, sTracks);
-       // ArrayAdapter<String> trackAdapter = new ArrayAdapter<String>(this, R.layout.track_list_view, R.id.ct, sTracks);
+        // ArrayAdapter<String> trackAdapter = new ArrayAdapter<String>(this, R.layout.track_list_view, R.id.ct, sTracks);
         //Creating ListView
-         //ListView lv = (ListView) findViewById(R.id.track_list);
+        //ListView lv = (ListView) findViewById(R.id.track_list);
 
 
         int i = 0;
 
-        ArrayList<Tracks> track_list= new ArrayList<Tracks>();
-        TrackAdapter ta = new TrackAdapter(this,track_list);
+        ArrayList<Tracks> track_list = new ArrayList<Tracks>();
+        TrackAdapter ta = new TrackAdapter(this, track_list);
         ListView listView = (ListView) findViewById(R.id.track_list);
-
 
 
         try {
@@ -143,12 +136,12 @@ public class MainActivity extends AppCompatActivity {
             while ((line = br.readLine()) != null) {
 
 
-              //  text.append(line);
+                //  text.append(line);
 
                 //Copy from StringBuilder to String object
-               // sTracks.add(i++, line);
+                // sTracks.add(i++, line);
 
-                Tracks tr = new Tracks(line,false);
+                Tracks tr = new Tracks(line, false);
                 ta.add(tr);
 
 
@@ -157,52 +150,27 @@ public class MainActivity extends AppCompatActivity {
 
             br.close();
 
-            //Set the listView Adapter
-            //lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-            //lv.setAdapter(trackAdapter);
-
-//            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//                @Override
-//                public void onItemClick (AdapterView<?> parent,View v,int pos, long id ) {
-//
-//                    CheckedTextView cv = (CheckedTextView) v.findViewById(R.id.ct);
-//                    cv.setText("abc");
-////                    if(cv.isChecked() == true)
-////                    {
-////                        cv.setChecked(false);
-////
-////                    }
-////                    else
-////                    {
-////                        cv.setChecked(true);
-////
-////                    }
-//
-////                    ListView lv = (ListView) findViewById(R.id.track_list);
-////                    View ld = (View) lv.getAdapter().getView(pos,null,lv);
-////
-////                    CheckedTextView ct = (CheckedTextView) ld.findViewById(R.id.ct);
-////
-////                    ct.setText("abc");
-////                                        if(ct.isChecked() == true)
-////                    {
-////                        ct.setChecked(false);
-////
-////                    }
-////                    else
-////                    {
-////                        ct.setChecked(true);
-////
-////                    }
-//
-//
-//
-//
-//                }
-//            });
-//
             listView.setAdapter(ta);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position,
+                                        long id) {
+
+                    Toast a = Toast.makeText(MainActivity.this, "here", Toast.LENGTH_LONG);
+                    a.show();
+                    Tracks track_click = (Tracks) parent.getItemAtPosition(position);
+
+                    if (track_click.track_check) {
+                        track_click.setChecked(false);
+                    } else
+                        track_click.setChecked(true);
+
+
+                }
+            });
+//
+
 
             Toast b = Toast.makeText(MainActivity.this, "Finished", Toast.LENGTH_SHORT);
             b.show();
@@ -213,23 +181,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public void check (View v)
-    {
+
+    public void check(View v) {
         LayoutInflater lf = getLayoutInflater();
-        View track_list = lf.inflate(R.layout.track_list_view,null);
-        CheckBox cb = (CheckBox)track_list.findViewById(R.id.checkbox);
+        View track_list = lf.inflate(R.layout.track_list_view, null);
+        CheckBox cb = (CheckBox) track_list.findViewById(R.id.checkbox);
         ListView lv = (ListView) findViewById(R.id.track_list);
         Toast a = Toast.makeText(MainActivity.this, String.valueOf(lv.getCheckedItemPosition()), Toast.LENGTH_LONG);
         a.show();
-        Log.v("id:",String.valueOf(cb.getId()));
-
-
-
+        Log.v("id:", String.valueOf(cb.getId()));
 
 
     }
-    public void selectTracks(View v)
-    {
+
+    public void selectTracks(View v) {
 //
     }
 

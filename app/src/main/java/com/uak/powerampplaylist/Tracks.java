@@ -13,6 +13,10 @@ public class Tracks {
         this.track_name = t_name;
         this.track_check = t_check;
     }
+    public void setChecked(boolean t_check)
+    {
+        this.track_check = t_check;
+    }
 
 
 }

@@ -4,13 +4,13 @@
     android:layout_height="match_parent">
 
     <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/track_list_cb"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="20px"
+
         android:longClickable="true"
 
         android:id="@+id/track_text_view"/>
