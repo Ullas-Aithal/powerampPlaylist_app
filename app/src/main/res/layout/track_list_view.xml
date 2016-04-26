@@ -6,13 +6,14 @@
     <CheckBox
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/track_list_cb"/>
+        android:id="@+id/track_list_cb"
+        android:focusable="false"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:longClickable="true"
 
+        android:focusable="false"
         android:id="@+id/track_text_view"/>
 
     <!--<CheckedTextView-->
