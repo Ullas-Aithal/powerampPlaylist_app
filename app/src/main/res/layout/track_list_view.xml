@@ -3,21 +3,26 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:padding="20px"-->
-        <!--android:longClickable="true"-->
-
-        <!--android:id="@+id/track_text_view" />-->
-    <CheckedTextView
+    <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ct"
-        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-        android:checked="false"
-        android:paddingBottom="10dp"
-        android:drawablePadding="10dp"
+        android:id="@+id/track_list_cb"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20px"
+        android:longClickable="true"
 
-        />
+        android:id="@+id/track_text_view"/>
+
+    <!--<CheckedTextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/ct"-->
+        <!--android:checkMark="?android:attr/listChoiceIndicatorMultiple"-->
+        <!--android:checked="false"-->
+        <!--android:paddingBottom="10dp"-->
+        <!--android:drawablePadding="10dp"-->
+
+        <!--/>-->
 </LinearLayout>
