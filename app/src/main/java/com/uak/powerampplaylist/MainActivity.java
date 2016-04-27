@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    ArrayList<Tracks> track_list = new ArrayList<Tracks>();
     public void getPlaylistsIntent(View view) {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         Toast t = Toast.makeText(MainActivity.this, "Getting Playlists", Toast.LENGTH_SHORT);
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
         int i = 0;
 
-        ArrayList<Tracks> track_list = new ArrayList<Tracks>();
+
         TrackAdapter ta = new TrackAdapter(this, track_list);
         ListView listView = (ListView) findViewById(R.id.track_list);
 
@@ -142,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
                 // sTracks.add(i++, line);
 
                 Tracks tr = new Tracks(line, false);
-                ta.add(tr);
+                track_list.add(tr);
+                //ta.add(tr);
 
 
             }
@@ -198,21 +199,67 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+       public void reorderTracks(ArrayList<?> vCheckedTracks)
+       {
+           ArrayList<Tracks> temp_track_list = new ArrayList<>();
+
+           int checkPos =0;
+
+         //  for(int i =0; i<vCheckedTracks.size() ; i++) {
+
+               try {
+                   temp_track_list.get((Integer) vCheckedTracks.get(checkPos));
+
+               } catch (IndexOutOfBoundsException e) {
+                   Tracks a = new Tracks("abc", true);
+
+                  // temp_track_list.add(((Integer) vCheckedTracks.get(checkPos)), a);
+
+//                   Tracks b = temp_track_list.get(((Integer) vCheckedTracks.get(checkPos)));
+//                   Toast c = Toast.makeText(MainActivity.this, String.valueOf(b.track_name), Toast.LENGTH_SHORT);
+//                   c.show();
+
+
+               }
+         //  }
+
+
+
+//           if(t.track_name == null) {
+//
+//               t.track_name = "abc";
+//               Toast a = Toast.makeText(MainActivity.this, String.valueOf(t.track_name), Toast.LENGTH_SHORT);
+//               a.show();
+//           }
+
+
+//           int j =0;
+//          for(int i=0; i< vCheckedTracks.size(); i++)
+//          {
+//
+//           }
+       }
 
     public void selectTracks(View v) {
 
+        ArrayList<Integer> checkedTracks= new ArrayList<>();
+
+
         ListView lv = (ListView) findViewById(R.id.track_list);
+
         for (int i=0; i< lv.getCount();i++)
         {
             Tracks selectedTrack = (Tracks)lv.getItemAtPosition(i);
 
             if(selectedTrack.track_check) {
-                Toast a = Toast.makeText(MainActivity.this, String.valueOf(i), Toast.LENGTH_SHORT);
-                a.show();
+
+                checkedTracks.add(i);
             }
 
         }
-
+        reorderTracks(checkedTracks);
+//        Toast a = Toast.makeText(MainActivity.this, String.valueOf(checkedTracks.size()), Toast.LENGTH_SHORT);
+//        a.show();
 //
     }
 
