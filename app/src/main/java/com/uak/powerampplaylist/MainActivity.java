@@ -157,15 +157,20 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position,
                                         long id) {
 
-                    Toast a = Toast.makeText(MainActivity.this, "here", Toast.LENGTH_LONG);
-                    a.show();
+                    //Toast a = Toast.makeText(MainActivity.this, "here", Toast.LENGTH_LONG);
+                    //a.show();
                     Tracks track_click = (Tracks) parent.getItemAtPosition(position);
+                    CheckBox cb = (CheckBox) view.findViewById(R.id.track_list_cb);
 
                     if (track_click.track_check) {
                         track_click.setChecked(false);
+
                     } else
                         track_click.setChecked(true);
 
+
+
+                    cb.setChecked(track_click.track_check);
 
                 }
             });
@@ -195,8 +200,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void selectTracks(View v) {
+
+        ListView lv = (ListView) findViewById(R.id.track_list);
+        for (int i=0; i< lv.getCount();i++)
+        {
+            Tracks selectedTrack = (Tracks)lv.getItemAtPosition(i);
+
+            if(selectedTrack.track_check) {
+                Toast a = Toast.makeText(MainActivity.this, String.valueOf(i), Toast.LENGTH_SHORT);
+                a.show();
+            }
+
+        }
+
 //
     }
+
 
     @Override
     public void onStart() {
