@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,30 +53,6 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
-
-        //ListView lv = (ListView) findViewById(R.id.track_list);
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick (AdapterView<?> parent,View v,int pos, long id ) {
-//
-//                //CheckedTextView cv = (CheckedTextView) v;
-//
-////                    if(cv.isChecked() == true)
-////                    {
-////                        cv.setChecked(false);
-////                    }
-////                    else
-////                    {
-////                        cv.setChecked(true);
-////                    }
-//                Toast a = Toast.makeText(MainActivity.this, "hi", Toast.LENGTH_LONG);
-//                a.show();
-//
-//
-//            }
-//        });
 
 
     }
@@ -102,28 +82,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     ArrayList<Tracks> track_list = new ArrayList<Tracks>();
+
+
     public void getPlaylistsIntent(View view) {
+
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         Toast t = Toast.makeText(MainActivity.this, "Getting Playlists", Toast.LENGTH_SHORT);
         t.show();
 
         File file = new File("/sdcard/backups/poweramp_English.txt");
-
-        //Creating a String to append the lines from the file
-        //StringBuilder text = new StringBuilder();
-
-        //Creating String Object to pass it for Adapter
-        //ArrayList<String> sTracks = new ArrayList<String>();
-
-        //Creating ArrayAdapter for List View
-        //ArrayAdapter<String> trackAdapter = new ArrayAdapter<String>(this, R.layout.track_list_view, R.id.track_text_view, sTracks);
-        // ArrayAdapter<String> trackAdapter = new ArrayAdapter<String>(this, R.layout.track_list_view, R.id.ct, sTracks);
-        //Creating ListView
-        //ListView lv = (ListView) findViewById(R.id.track_list);
-
-
-        int i = 0;
-
 
         TrackAdapter ta = new TrackAdapter(this, track_list);
         ListView listView = (ListView) findViewById(R.id.track_list);
@@ -158,8 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position,
                                         long id) {
 
-                    //Toast a = Toast.makeText(MainActivity.this, "here", Toast.LENGTH_LONG);
-                    //a.show();
+
                     Tracks track_click = (Tracks) parent.getItemAtPosition(position);
                     CheckBox cb = (CheckBox) view.findViewById(R.id.track_list_cb);
 
@@ -168,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
                     } else
                         track_click.setChecked(true);
-
 
 
                     cb.setChecked(track_click.track_check);
@@ -188,70 +153,71 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void check(View v) {
-        LayoutInflater lf = getLayoutInflater();
-        View track_list = lf.inflate(R.layout.track_list_view, null);
-        CheckBox cb = (CheckBox) track_list.findViewById(R.id.checkbox);
-        ListView lv = (ListView) findViewById(R.id.track_list);
-        Toast a = Toast.makeText(MainActivity.this, String.valueOf(lv.getCheckedItemPosition()), Toast.LENGTH_LONG);
+//    public void check(View v) {
+//        LayoutInflater lf = getLayoutInflater();
+//        View track_list = lf.inflate(R.layout.track_list_view, null);
+//        CheckBox cb = (CheckBox) track_list.findViewById(R.id.checkbox);
+//        ListView lv = (ListView) findViewById(R.id.track_list);
+//        Toast a = Toast.makeText(MainActivity.this, String.valueOf(lv.getCheckedItemPosition()), Toast.LENGTH_LONG);
+//        a.show();
+//        Log.v("id:", String.valueOf(cb.getId()));
+//
+//
+//    }
+
+    public void reorderTracks(ArrayList<Integer> vCheckedTracks) {
+        ArrayList<Tracks> temp_track_list = new ArrayList<>(track_list);
+        ArrayList<Tracks> copy_list = new ArrayList<>();
+
+        Toast a = Toast.makeText(MainActivity.this, "before " + String.valueOf(track_list.size()), Toast.LENGTH_LONG);
         a.show();
-        Log.v("id:", String.valueOf(cb.getId()));
+
+        int trackListLength = 0;
+
+        Collections.sort(vCheckedTracks);
+
+        for (int i = 0; i < vCheckedTracks.size(); i++) {
+
+
+            copy_list.add(track_list.get(vCheckedTracks.get(i)));
+            track_list.remove(vCheckedTracks.get(i).intValue());
+
+
+        }
+
+        trackListLength = track_list.size();
+
+        for (int i = 0; i < vCheckedTracks.size(); i++) {
+
+            track_list.add(trackListLength++, copy_list.get(i));
+        }
+
+
+        Toast b = Toast.makeText(MainActivity.this, "after " + String.valueOf(track_list.size()), Toast.LENGTH_LONG);
+        b.show();
 
 
     }
-       public void reorderTracks(ArrayList<?> vCheckedTracks)
-       {
-           ArrayList<Tracks> temp_track_list = new ArrayList<>();
 
-           int checkPos =0;
+    public void reinitilaizeTracks() {
+        for (int i = 0; i < track_list.size(); i++) {
+            Tracks t = track_list.get(i);
+            t.setChecked(false);
 
-         //  for(int i =0; i<vCheckedTracks.size() ; i++) {
-
-               try {
-                   temp_track_list.get((Integer) vCheckedTracks.get(checkPos));
-
-               } catch (IndexOutOfBoundsException e) {
-                   Tracks a = new Tracks("abc", true);
-
-                  // temp_track_list.add(((Integer) vCheckedTracks.get(checkPos)), a);
-
-//                   Tracks b = temp_track_list.get(((Integer) vCheckedTracks.get(checkPos)));
-//                   Toast c = Toast.makeText(MainActivity.this, String.valueOf(b.track_name), Toast.LENGTH_SHORT);
-//                   c.show();
-
-
-               }
-         //  }
-
-
-
-//           if(t.track_name == null) {
-//
-//               t.track_name = "abc";
-//               Toast a = Toast.makeText(MainActivity.this, String.valueOf(t.track_name), Toast.LENGTH_SHORT);
-//               a.show();
-//           }
-
-
-//           int j =0;
-//          for(int i=0; i< vCheckedTracks.size(); i++)
-//          {
-//
-//           }
-       }
+        }
+    }
 
     public void selectTracks(View v) {
 
-        ArrayList<Integer> checkedTracks= new ArrayList<>();
+        ArrayList<Integer> checkedTracks = new ArrayList<>();
 
 
         ListView lv = (ListView) findViewById(R.id.track_list);
 
-        for (int i=0; i< lv.getCount();i++)
-        {
-            Tracks selectedTrack = (Tracks)lv.getItemAtPosition(i);
+        for (int i = 0; i < lv.getCount(); i++) {
+            Tracks selectedTrack = (Tracks) lv.getItemAtPosition(i);
 
-            if(selectedTrack.track_check) {
+            if (selectedTrack.track_check) {
 
                 checkedTracks.add(i);
             }
@@ -261,6 +227,12 @@ public class MainActivity extends AppCompatActivity {
 //        Toast a = Toast.makeText(MainActivity.this, String.valueOf(checkedTracks.size()), Toast.LENGTH_SHORT);
 //        a.show();
 //
+        reinitilaizeTracks();
+
+        TrackAdapter ta = new TrackAdapter(this, track_list);
+        lv.setAdapter(ta);
+
+
     }
 
 
