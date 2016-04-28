@@ -36,6 +36,10 @@
             style="?android:attr/buttonBarButtonStyle"
             android:text="@string/sSelectedItems" />
     </LinearLayout>
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"/>
     <ListView
         android:id="@+id/track_list"
         android:layout_width="wrap_content"
