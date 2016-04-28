@@ -169,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Tracks> temp_track_list = new ArrayList<>(track_list);
         ArrayList<Tracks> copy_list = new ArrayList<>();
 
-        Toast a = Toast.makeText(MainActivity.this, "before " + String.valueOf(track_list.size()), Toast.LENGTH_LONG);
-        a.show();
+//        Toast a = Toast.makeText(MainActivity.this, "before " + String.valueOf(track_list.size()), Toast.LENGTH_LONG);
+//        a.show();
 
         int trackListLength = 0;
 
@@ -179,12 +179,19 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < vCheckedTracks.size(); i++) {
 
 
-            copy_list.add(track_list.get(vCheckedTracks.get(i)));
-            track_list.remove(vCheckedTracks.get(i).intValue());
+//            Toast a = Toast.makeText(MainActivity.this, "before " + String.valueOf(vCheckedTracks.get(i).intValue()), Toast.LENGTH_LONG);
+//        a.show();
+           copy_list.add(track_list.get(vCheckedTracks.get(i)));
+
 
 
         }
 
+
+        for (int i = 0; i < vCheckedTracks.size(); i++) {
+
+            track_list.remove(vCheckedTracks.get(i) - i);
+        }
         trackListLength = track_list.size();
 
         for (int i = 0; i < vCheckedTracks.size(); i++) {
@@ -193,8 +200,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Toast b = Toast.makeText(MainActivity.this, "after " + String.valueOf(track_list.size()), Toast.LENGTH_LONG);
-        b.show();
+//        Toast b = Toast.makeText(MainActivity.this, "after " + String.valueOf(track_list.size()), Toast.LENGTH_LONG);
+//        b.show();
 
 
     }
