@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -57,40 +58,52 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    //Declaring Custom Adapter to handle check box and text view
     public class TrackAdapter extends ArrayAdapter<Tracks> {
         public TrackAdapter(Context context, ArrayList<Tracks> tracks) {
             super(context, 0, tracks);
         }
 
+        //Overriding get view.
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Tracks tracks = getItem(position);
 
+            //check if the old view is used
             if (convertView == null) {
+
                 LayoutInflater li = getLayoutInflater();
                 convertView = li.inflate(R.layout.track_list_view, parent, false);
             }
+            //Get View items
             TextView tv = (TextView) convertView.findViewById(R.id.track_text_view);
             CheckBox cb = (CheckBox) convertView.findViewById(R.id.track_list_cb);
+            TextView tv1 = (TextView) convertView.findViewById(R.id.track_number);
 
+            //Set values to the View items
             tv.setText(tracks.track_name);
             cb.setChecked(tracks.track_check);
+            tv1.setText(String.valueOf(tracks.track_number));
             return convertView;
         }
 
     }
 
+    //Create and Array of Tracks objects
     ArrayList<Tracks> track_list = new ArrayList<Tracks>();
 
+    int ready_flag = 0;
+    int check_count = 0;
 
     public void getPlaylistsIntent(View view) {
 
+        //Ask permissions
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         Toast t = Toast.makeText(MainActivity.this, "Getting Playlists", Toast.LENGTH_SHORT);
         t.show();
 
         File file = new File("/sdcard/backups/poweramp_English.txt");
+
 
         TrackAdapter ta = new TrackAdapter(this, track_list);
         ListView listView = (ListView) findViewById(R.id.track_list);
@@ -99,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-
+            int i = 1;
             while ((line = br.readLine()) != null) {
 
 
@@ -107,8 +120,10 @@ public class MainActivity extends AppCompatActivity {
 
                 //Copy from StringBuilder to String object
                 // sTracks.add(i++, line);
+                //Initialize objects
+                Tracks tr = new Tracks(line, false, i++);
 
-                Tracks tr = new Tracks(line, false);
+                //Add the object to TrackList
                 track_list.add(tr);
                 //ta.add(tr);
 
@@ -118,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
             br.close();
 
+            //Set the adapter with values
             listView.setAdapter(ta);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -129,13 +145,26 @@ public class MainActivity extends AppCompatActivity {
                     Tracks track_click = (Tracks) parent.getItemAtPosition(position);
                     CheckBox cb = (CheckBox) view.findViewById(R.id.track_list_cb);
 
+                    //Handling checkbox clicks
                     if (track_click.track_check) {
+
                         track_click.setChecked(false);
+                        check_count--;
+                        if (check_count == 0)
+                        {
+                            ready_flag = 1;
+                            EditText et = (EditText) findViewById(R.id.move_position);
+                            et.setVisibility(View.INVISIBLE);
+                        }
+
 
                     } else
                         track_click.setChecked(true);
+                        check_count++;
+                    EditText et = (EditText) findViewById(R.id.move_position);
+                    et.setVisibility(View.VISIBLE);
 
-
+                    //assign the value to the variable in the object
                     cb.setChecked(track_click.track_check);
 
                 }
@@ -165,17 +194,36 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-    public void reorderTracks(ArrayList<Integer> vCheckedTracks) {
+    public void reorderTracks(ArrayList<Integer> vCheckedTracks, int move) {
+
+
         ArrayList<Tracks> temp_track_list = new ArrayList<>(track_list);
+
+        //Create a new Array to hold "to be moved" items
         ArrayList<Tracks> copy_list = new ArrayList<>();
 
 //        Toast a = Toast.makeText(MainActivity.this, "before " + String.valueOf(track_list.size()), Toast.LENGTH_LONG);
 //        a.show();
 
         int trackListLength = 0;
+        int move_counter = 0;
 
+        //Sort the selected indexes of the tracks
         Collections.sort(vCheckedTracks);
 
+        //Repositioning the index to where all the tracks have to be moved
+        for(int i=0; i<vCheckedTracks.size();i++ )
+        {
+            if(vCheckedTracks.get(i) < move)
+            {
+                move_counter++;
+            }
+            else break;
+        }
+        move = move - move_counter;
+
+
+        //Copy all the items that are to be moved
         for (int i = 0; i < vCheckedTracks.size(); i++) {
 
 
@@ -187,16 +235,18 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
+        //Remove the tracks from the original array (items get rearranged automatically)
         for (int i = 0; i < vCheckedTracks.size(); i++) {
 
             track_list.remove(vCheckedTracks.get(i) - i);
         }
-        trackListLength = track_list.size();
 
+
+
+        //Add back the removed tracks to the place where it has to be moved
         for (int i = 0; i < vCheckedTracks.size(); i++) {
 
-            track_list.add(trackListLength++, copy_list.get(i));
+            track_list.add(move++, copy_list.get(i));
         }
 
 
@@ -206,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Reset the checkboxes
     public void reinitilaizeTracks() {
         for (int i = 0; i < track_list.size(); i++) {
             Tracks t = track_list.get(i);
@@ -217,10 +268,12 @@ public class MainActivity extends AppCompatActivity {
     public void selectTracks(View v) {
 
         ArrayList<Integer> checkedTracks = new ArrayList<>();
-
+        EditText et = (EditText) findViewById(R.id.move_position);
+        int move = Integer.parseInt(et.getText().toString());
 
         ListView lv = (ListView) findViewById(R.id.track_list);
 
+        //Get the indexes of to be moved tracks and keep track of these indexes in an array
         for (int i = 0; i < lv.getCount(); i++) {
             Tracks selectedTrack = (Tracks) lv.getItemAtPosition(i);
 
@@ -230,12 +283,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-        reorderTracks(checkedTracks);
+        reorderTracks(checkedTracks,--move);
 //        Toast a = Toast.makeText(MainActivity.this, String.valueOf(checkedTracks.size()), Toast.LENGTH_SHORT);
 //        a.show();
 //
         reinitilaizeTracks();
 
+        //Refresh the View with updates
         TrackAdapter ta = new TrackAdapter(this, track_list);
         lv.setAdapter(ta);
 

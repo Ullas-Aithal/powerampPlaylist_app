@@ -39,7 +39,10 @@
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:hint="Position where the tracks have to be moved"
+        android:id="@+id/move_position"
+        />
     <ListView
         android:id="@+id/track_list"
         android:layout_width="wrap_content"
