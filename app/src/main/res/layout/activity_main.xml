@@ -17,32 +17,47 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        style="?android:attr/buttonBarStyle">
+        style="?android:attr/buttonBarStyle"
+        android:id="@+id/linearlayout">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+
             android:onClick="getPlaylistsIntent"
             style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
 
             android:text="@string/sGetPlaylists" />
+
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="selectTracks"
+            android:id="@+id/selectedTracks"
+            android:enabled="false"
             android:layout_weight="1"
             style="?android:attr/buttonBarButtonStyle"
-            android:text="@string/sSelectedItems" />
+            android:text="@string/sSelectedItems"
+            />
     </LinearLayout>
-    <EditText
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Position where the tracks have to be moved"
-        android:id="@+id/move_position"
-        />
+        android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Position to be moved"
+            android:id="@+id/move_position"
+
+            android:visibility="gone"/>
+        </LinearLayout>
+
     <ListView
         android:id="@+id/track_list"
         android:layout_width="wrap_content"
@@ -50,6 +65,7 @@
         android:clickable="true"
 
         />
+
 </LinearLayout>
 
 

@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
@@ -149,22 +151,26 @@ public class MainActivity extends AppCompatActivity {
                     if (track_click.track_check) {
 
                         track_click.setChecked(false);
+
                         check_count--;
                         if (check_count == 0)
                         {
                             ready_flag = 1;
-                            EditText et = (EditText) findViewById(R.id.move_position);
-                            et.setVisibility(View.INVISIBLE);
+                            disableViews();
+
                         }
 
 
-                    } else
+                    }
+                    else
+                    {
                         track_click.setChecked(true);
                         check_count++;
-                    EditText et = (EditText) findViewById(R.id.move_position);
-                    et.setVisibility(View.VISIBLE);
+                        enableViews();
 
-                    //assign the value to the variable in the object
+                        //assign the value to the variable in the object
+
+                    }
                     cb.setChecked(track_click.track_check);
 
                 }
@@ -262,14 +268,45 @@ public class MainActivity extends AppCompatActivity {
             Tracks t = track_list.get(i);
             t.setChecked(false);
 
+            t.track_number = i+1;
+
         }
+        ready_flag = 0;
+        check_count = 0;
+        disableViews();
+    }
+
+    public void disableViews()
+    {
+        EditText et = (EditText) findViewById(R.id.move_position);
+        et.setVisibility(View.INVISIBLE);
+        Button b = (Button) findViewById(R.id.selectedTracks);
+        b.setEnabled(false);
+    }
+    public void enableViews()
+    {
+
+        EditText et = (EditText) findViewById(R.id.move_position);
+        et.setVisibility(View.VISIBLE);
+        et.setText(null);
+        Button b = (Button) findViewById(R.id.selectedTracks);
+        b.setEnabled(true);
     }
 
     public void selectTracks(View v) {
 
-        ArrayList<Integer> checkedTracks = new ArrayList<>();
         EditText et = (EditText) findViewById(R.id.move_position);
         int move = Integer.parseInt(et.getText().toString());
+
+        if(move <= 0 || move > track_list.size())
+        {
+            Toast a = Toast.makeText(MainActivity.this,"Please select number between 1 and " + track_list.size(), Toast.LENGTH_LONG);
+            a.show();
+            return;
+        }
+
+        ArrayList<Integer> checkedTracks = new ArrayList<>();
+
 
         ListView lv = (ListView) findViewById(R.id.track_list);
 

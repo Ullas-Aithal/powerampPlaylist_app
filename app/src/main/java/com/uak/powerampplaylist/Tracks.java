@@ -20,7 +20,14 @@ public class Tracks {
     public void setChecked(boolean t_check)
     {
         this.track_check = t_check;
+
     }
+    public void setNumber(int t_number)
+    {
+
+        this.track_number = t_number;
+    }
+
 
 
 }
