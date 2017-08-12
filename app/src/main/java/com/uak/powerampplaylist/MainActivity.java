@@ -3,6 +3,7 @@ package com.uak.powerampplaylist;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -41,8 +42,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 public class MainActivity extends AppCompatActivity {
 
+    String filepath = "";
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -101,94 +105,135 @@ public class MainActivity extends AppCompatActivity {
 
         //Ask permissions
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+//        fileExplorer();
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        startActivityForResult(intent, 15);
         Toast t = Toast.makeText(MainActivity.this, "Getting Playlists", Toast.LENGTH_SHORT);
         t.show();
 
-        File file = new File("/sdcard/backups/poweramp_English.txt");
-
-
-        TrackAdapter ta = new TrackAdapter(this, track_list);
-        ListView listView = (ListView) findViewById(R.id.track_list);
-
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            int i = 1;
-            while ((line = br.readLine()) != null) {
-
-
-                //  text.append(line);
-
-                //Copy from StringBuilder to String object
-                // sTracks.add(i++, line);
-                //Initialize objects
-                Tracks tr = new Tracks(line, false, i++);
-
-                //Add the object to TrackList
-                track_list.add(tr);
-                //ta.add(tr);
-
-
-            }
-
-
-            br.close();
-
-            //Set the adapter with values
-            listView.setAdapter(ta);
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position,
-                                        long id) {
-
-
-                    Tracks track_click = (Tracks) parent.getItemAtPosition(position);
-                    CheckBox cb = (CheckBox) view.findViewById(R.id.track_list_cb);
-
-                    //Handling checkbox clicks
-                    if (track_click.track_check) {
-
-                        track_click.setChecked(false);
-
-                        check_count--;
-                        if (check_count == 0)
-                        {
-                            ready_flag = 1;
-                            disableViews();
-
-                        }
-
-
-                    }
-                    else
-                    {
-                        track_click.setChecked(true);
-                        check_count++;
-                        enableViews();
-
-                        //assign the value to the variable in the object
-
-                    }
-                    cb.setChecked(track_click.track_check);
-
-                }
-            });
-//
-
-
-            Toast b = Toast.makeText(MainActivity.this, "Finished", Toast.LENGTH_SHORT);
-            b.show();
-        } catch (IOException e) {
-            Toast a = Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG);
-            a.show();
-        }
 
 
     }
 
-//    public void check(View v) {
+    public void fileExplorer()
+    {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        startActivityForResult(intent, 15);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 15)
+        {
+            try {
+                Uri uri = data.getData();
+                File importfile = new File(uri.getPath());
+
+
+                if(importfile.getAbsolutePath().contains(":")) {
+                    filepath = importfile.getAbsolutePath().split(":")[1];
+                }
+                else
+                {
+                    filepath = importfile.getAbsolutePath();
+                }
+
+                File file = new File(filepath);
+
+
+                TrackAdapter ta = new TrackAdapter(this, track_list);
+                ListView listView = (ListView) findViewById(R.id.track_list);
+
+
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(importfile));
+                    String line;
+                    int i = 1;
+                    while ((line = br.readLine()) != null) {
+
+
+                        //  text.append(line);
+
+                        //Copy from StringBuilder to String object
+                        // sTracks.add(i++, line);
+                        //Initialize objects
+                        Tracks tr = new Tracks(line, false, i++);
+
+                        //Add the object to TrackList
+                        track_list.add(tr);
+                        //ta.add(tr);
+
+
+                    }
+
+
+                    br.close();
+
+                    //Set the adapter with values
+                    listView.setAdapter(ta);
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                                long id) {
+
+
+                            Tracks track_click = (Tracks) parent.getItemAtPosition(position);
+                            CheckBox cb = (CheckBox) view.findViewById(R.id.track_list_cb);
+
+                            //Handling checkbox clicks
+                            if (track_click.track_check) {
+
+                                track_click.setChecked(false);
+
+                                check_count--;
+                                if (check_count == 0)
+                                {
+                                    ready_flag = 1;
+                                    disableViews();
+
+                                }
+
+
+                            }
+                            else
+                            {
+                                track_click.setChecked(true);
+                                check_count++;
+                                enableViews();
+
+                                //assign the value to the variable in the object
+
+                            }
+                            cb.setChecked(track_click.track_check);
+
+                        }
+                    });
+//
+
+
+                    Toast b = Toast.makeText(MainActivity.this, "Finished", Toast.LENGTH_SHORT);
+                    b.show();
+                } catch (IOException e) {
+                    Toast a = Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG);
+                    a.show();
+                }
+
+
+
+
+            } catch (Exception e) {
+                Log.i("File operation error", e.toString());
+            }
+        }
+
+    }
+
+    //    public void check(View v) {
 //        LayoutInflater lf = getLayoutInflater();
 //        View track_list = lf.inflate(R.layout.track_list_view, null);
 //        CheckBox cb = (CheckBox) track_list.findViewById(R.id.checkbox);
