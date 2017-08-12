@@ -106,67 +106,55 @@ public class MainActivity extends AppCompatActivity {
         //Ask permissions
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
-//        fileExplorer();
+        //Open File Explorer
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         startActivityForResult(intent, 15);
-        Toast t = Toast.makeText(MainActivity.this, "Getting Playlists", Toast.LENGTH_SHORT);
-        t.show();
-
-
 
     }
 
-    public void fileExplorer()
-    {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        startActivityForResult(intent, 15);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        //Check if the result is from file explorer
         if (requestCode == 15)
         {
             try {
+                //Get uri
                 Uri uri = data.getData();
-                File importfile = new File(uri.getPath());
+//                File importfile = new File(uri.getPath());
+//
+//
+//                if(importfile.getAbsolutePath().contains(":")) {
+//                    filepath = importfile.getAbsolutePath().split(":")[1];
+//                }
+//                else
+//                {
+//                    filepath = importfile.getAbsolutePath();
+//                }
 
-
-                if(importfile.getAbsolutePath().contains(":")) {
-                    filepath = importfile.getAbsolutePath().split(":")[1];
-                }
-                else
-                {
-                    filepath = importfile.getAbsolutePath();
-                }
-
-                File file = new File(filepath);
+                //File file = new File(filepath);
+                //File file = new File(uri);
 
 
                 TrackAdapter ta = new TrackAdapter(this, track_list);
                 ListView listView = (ListView) findViewById(R.id.track_list);
-
-
                 try {
-                    BufferedReader br = new BufferedReader(new FileReader(importfile));
+                    //BufferedReader br = new BufferedReader(new FileReader(importfile));
+                    //Create input stream from the URI
+                    InputStream ip = getContentResolver().openInputStream(uri);
+
+                    //Read the input stream into a buffered reader
+                    BufferedReader br = new BufferedReader(new InputStreamReader(ip));
                     String line;
                     int i = 1;
                     while ((line = br.readLine()) != null) {
 
-
-                        //  text.append(line);
-
-                        //Copy from StringBuilder to String object
-                        // sTracks.add(i++, line);
                         //Initialize objects
                         Tracks tr = new Tracks(line, false, i++);
 
                         //Add the object to TrackList
                         track_list.add(tr);
-                        //ta.add(tr);
-
 
                     }
 
